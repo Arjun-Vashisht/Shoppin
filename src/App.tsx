@@ -11,12 +11,21 @@ function App() {
   const [likedProducts, setLikedProducts] = useState<number[]>([]);
   const [dislikedProducts, setDislikedProducts] = useState<number[]>([]);
   const [cartProducts, setCartProducts] = useState<number[]>([]);
+  const [statusBarHeight, setStatusBarHeight] = useState(0);
 
   useEffect(() => {
     // Initialize Status Bar
     if (Capacitor.isNativePlatform()) {
       StatusBar.setStyle({ style: Style.Dark });
       StatusBar.setBackgroundColor({ color: '#ffffff' });
+      
+      // Get status bar height
+      const getStatusBarHeight = async () => {
+        const info = await StatusBar.getInfo();
+        // Default to 24px if height is not available
+        setStatusBarHeight(info.overlays ? 0 : 24);
+      };
+      getStatusBarHeight();
     }
   }, []);
 
@@ -52,7 +61,9 @@ function App() {
 
   return (
     <div className="h-screen overflow-hidden bg-gray-100">
-      <Navbar />
+      <div style={{ paddingTop: Capacitor.isNativePlatform() ? `${statusBarHeight}px` : '0' }}>
+        <Navbar />
+      </div>
       <div className="h-[calc(100vh)] px-4 sm:px-6 lg:px-8">
         <div className="h-full max-w-7xl mx-auto">
           <div className="flex flex-col items-center justify-center h-full">
