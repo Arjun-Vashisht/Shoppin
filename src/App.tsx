@@ -44,7 +44,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
-      <div className="pt-24 px-4 sm:px-6 lg:px-8">
+      <div className="pt-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col items-center justify-center min-h-[calc(100vh-8rem)]">
             <div className="w-full max-w-sm h-[70vh] relative">
