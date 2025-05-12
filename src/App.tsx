@@ -23,23 +23,32 @@ function App() {
   const handleSwipeLeft = (id: number) => {
     console.log("Disliked Product ID:", id);
     setDislikedProducts([...dislikedProducts, id]);
-    setCurrentIndex(currentIndex + 1);
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % products.length);
   };
 
   const handleSwipeRight = (id: number) => {
     console.log("Liked Product ID:", id);
     setLikedProducts([...likedProducts, id]);
-    setCurrentIndex(currentIndex + 1);
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % products.length);
   };
 
   const handleSwipeUp = (id: number) => {
     console.log("Added to cart Product ID:", id);
     setCartProducts([...cartProducts, id]);
-    setCurrentIndex(currentIndex + 1);
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % products.length);
   };
 
-  // Get the next 3 products for the stack
-  const visibleProducts = products.slice(currentIndex, currentIndex + 3);
+  // Get the next 3 products for the stack, with wrapping
+  const getVisibleProducts = () => {
+    const visibleProducts = [];
+    for (let i = 0; i < 3; i++) {
+      const index = (currentIndex + i) % products.length;
+      visibleProducts.push(products[index]);
+    }
+    return visibleProducts;
+  };
+
+  const visibleProducts = getVisibleProducts();
 
   return (
     <div className="h-screen overflow-hidden bg-gray-100">
@@ -51,7 +60,7 @@ function App() {
               <AnimatePresence>
                 {visibleProducts.map((product, index) => (
                   <ProductCard
-                    key={product.id}
+                    key={`${product.id}-${currentIndex + index}`}
                     product={product}
                     onSwipeLeft={handleSwipeLeft}
                     onSwipeRight={handleSwipeRight}
@@ -61,11 +70,6 @@ function App() {
                   />
                 ))}
               </AnimatePresence>
-              {currentIndex >= products.length && (
-                <div className="absolute inset-0 flex items-center justify-center bg-white rounded-xl shadow-lg">
-                  <p className="text-xl text-gray-600">No more products to show!</p>
-                </div>
-              )}
             </div>
             <div className="mt-4 text-center">
               <p className="text-gray-600 text-sm">
