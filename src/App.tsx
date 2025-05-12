@@ -68,7 +68,7 @@ function App() {
               )}
             </div>
             <div className="mt-8 text-center">
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-sm">
                 Swipe right to like, left to dislike, or up to add to cart
               </p>
             </div>
