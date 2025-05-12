@@ -42,11 +42,11 @@ function App() {
   const visibleProducts = products.slice(currentIndex, currentIndex + 3);
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="h-screen overflow-hidden bg-gray-100">
       <Navbar />
-      <div className="pt-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col items-center justify-center min-h-[calc(100vh-8rem)]">
+      <div className="h-[calc(100vh)] px-4 sm:px-6 lg:px-8">
+        <div className="h-full max-w-7xl mx-auto">
+          <div className="flex flex-col items-center justify-center h-full">
             <div className="w-full max-w-sm h-[70vh] relative">
               <AnimatePresence>
                 {visibleProducts.map((product, index) => (
@@ -67,7 +67,7 @@ function App() {
                 </div>
               )}
             </div>
-            <div className="mt-8 text-center">
+            <div className="mt-4 text-center">
               <p className="text-gray-600 text-sm">
                 Swipe right to like, left to dislike, or up to add to cart
               </p>
