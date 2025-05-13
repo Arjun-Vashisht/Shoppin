@@ -14,15 +14,12 @@ function App() {
   const [safeAreaTop, setSafeAreaTop] = useState(0);
 
   useEffect(() => {
-    // Initialize Status Bar
     if (Capacitor.isNativePlatform()) {
       StatusBar.setStyle({ style: Style.Dark });
       StatusBar.setBackgroundColor({ color: '#ffffff' });
       
-      // Get device info and set safe area
       const initializeSafeArea = async () => {
         const info = await StatusBar.getInfo();
-        // Add extra padding for devices with notches
         const notchPadding = info.overlays ? 48 : 24;
         setSafeAreaTop(notchPadding);
       };
@@ -48,7 +45,6 @@ function App() {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % products.length);
   };
 
-  // Get the next 3 products for the stack, with wrapping
   const getVisibleProducts = () => {
     const visibleProducts = [];
     for (let i = 0; i < 3; i++) {
@@ -78,7 +74,7 @@ function App() {
       <div 
         className="h-[calc(100vh)] px-4 sm:px-6 lg:px-8"
         style={{
-          paddingTop: Capacitor.isNativePlatform() ? `${safeAreaTop + 56}px` : '0' // 56px is typical navbar height
+          paddingTop: Capacitor.isNativePlatform() ? `${safeAreaTop + 56}px` : '0'
         }}
       >
         <div className="h-full max-w-7xl mx-auto">

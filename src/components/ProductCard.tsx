@@ -35,7 +35,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }
   };
 
-  const stackOffset = index * 2; // 2px offset for each card in stack
+  const stackOffset = index * 2;
 
   return (
     <motion.div
