@@ -11,7 +11,7 @@ function App() {
   const [likedProducts, setLikedProducts] = useState<number[]>([]);
   const [dislikedProducts, setDislikedProducts] = useState<number[]>([]);
   const [cartProducts, setCartProducts] = useState<number[]>([]);
-  const [statusBarHeight, setStatusBarHeight] = useState(0);
+  const [safeAreaTop, setSafeAreaTop] = useState(0);
 
   useEffect(() => {
     // Initialize Status Bar
@@ -19,13 +19,14 @@ function App() {
       StatusBar.setStyle({ style: Style.Dark });
       StatusBar.setBackgroundColor({ color: '#ffffff' });
       
-      // Get status bar height
-      const getStatusBarHeight = async () => {
+      // Get device info and set safe area
+      const initializeSafeArea = async () => {
         const info = await StatusBar.getInfo();
-        // Default to 24px if height is not available
-        setStatusBarHeight(info.overlays ? 0 : 24);
+        // Add extra padding for devices with notches
+        const notchPadding = info.overlays ? 48 : 24;
+        setSafeAreaTop(notchPadding);
       };
-      getStatusBarHeight();
+      initializeSafeArea();
     }
   }, []);
 
@@ -61,10 +62,25 @@ function App() {
 
   return (
     <div className="h-screen overflow-hidden bg-gray-100">
-      <div style={{ paddingTop: Capacitor.isNativePlatform() ? `${statusBarHeight}px` : '0' }}>
+      <div 
+        style={{ 
+          paddingTop: Capacitor.isNativePlatform() ? `${safeAreaTop}px` : '0',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 50,
+          backgroundColor: '#ffffff'
+        }}
+      >
         <Navbar />
       </div>
-      <div className="h-[calc(100vh)] px-4 sm:px-6 lg:px-8">
+      <div 
+        className="h-[calc(100vh)] px-4 sm:px-6 lg:px-8"
+        style={{
+          paddingTop: Capacitor.isNativePlatform() ? `${safeAreaTop + 56}px` : '0' // 56px is typical navbar height
+        }}
+      >
         <div className="h-full max-w-7xl mx-auto">
           <div className="flex flex-col items-center justify-center h-full">
             <div className="w-full max-w-sm h-[70vh] relative">
