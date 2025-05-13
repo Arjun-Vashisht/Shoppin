@@ -78,7 +78,7 @@ function App() {
         }}
       >
         <div className="h-full max-w-7xl mx-auto">
-          <div className="flex flex-col items-center justify-center h-full">
+          <div className="flex flex-col items-center justify-center h-full pt-8">
             <div className="w-full max-w-sm h-[70vh] relative">
               <AnimatePresence>
                 {visibleProducts.map((product, index) => (
