@@ -4,7 +4,8 @@ import { products } from "./data/products";
 import Navbar from "./components/Navbar";
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { Capacitor } from '@capacitor/core';
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import * as FaIcons from "react-icons/fa";
 
 function App() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -12,6 +13,11 @@ function App() {
   const [dislikedProducts, setDislikedProducts] = useState<number[]>([]);
   const [cartProducts, setCartProducts] = useState<number[]>([]);
   const [safeAreaTop, setSafeAreaTop] = useState(0);
+  const [swipeFeedback, setSwipeFeedback] = useState<null | 'like' | 'dislike' | 'cart'>(null);
+  const HeartIcon = FaIcons.FaHeart as React.ElementType;
+  const DislikeIcon = FaIcons.FaThumbsDown as React.ElementType;
+  const CartIcon = FaIcons.FaShoppingCart as React.ElementType;
+
 
   useEffect(() => {
     if (Capacitor.isNativePlatform()) {
@@ -31,18 +37,21 @@ function App() {
     console.log("Disliked Product ID:", id);
     setDislikedProducts([...dislikedProducts, id]);
     setCurrentIndex((prevIndex) => (prevIndex + 1) % products.length);
+    showFeedback('dislike');
   };
 
   const handleSwipeRight = (id: number) => {
     console.log("Liked Product ID:", id);
     setLikedProducts([...likedProducts, id]);
     setCurrentIndex((prevIndex) => (prevIndex + 1) % products.length);
+    showFeedback('like');
   };
 
   const handleSwipeUp = (id: number) => {
     console.log("Added to cart Product ID:", id);
     setCartProducts([...cartProducts, id]);
     setCurrentIndex((prevIndex) => (prevIndex + 1) % products.length);
+    showFeedback('cart');
   };
 
   const getVisibleProducts = () => {
@@ -55,6 +64,12 @@ function App() {
   };
 
   const visibleProducts = getVisibleProducts();
+
+  const showFeedback = (type: 'like' | 'dislike' | 'cart') => {
+    setSwipeFeedback(type);
+    setTimeout(() => setSwipeFeedback(null), 700);
+  };
+
 
   return (
     <div className="h-screen overflow-hidden bg-gray-100">
@@ -92,7 +107,37 @@ function App() {
                     totalCards={visibleProducts.length}
                   />
                 ))}
+                {swipeFeedback && (
+                <motion.div
+                  key={swipeFeedback}
+                  initial={{ opacity: 0, scale: 0.6 }}
+                  animate={{ opacity: 1, scale: 1.2 }}
+                  exit={{ opacity: 0, scale: 0.6 }}
+                  style={{
+                    position: 'absolute',
+                    top: '40%',
+                    left: '40%',
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: 50,
+                    pointerEvents: 'none',
+                  }}
+                >
+                  <div className="flex items-center justify-center">
+
+                 {swipeFeedback === 'like' && (
+                    <HeartIcon className="text-red-500 text-[72px] drop-shadow-lg animate-bounce" />
+                  )}
+                  {swipeFeedback === 'dislike' && (
+                    <DislikeIcon className="text-gray-500 text-[72px] drop-shadow-lg animate-bounce" />
+                  )}
+                  {swipeFeedback === 'cart' && (
+                    <CartIcon className="text-green-500 text-[72px] drop-shadow-lg animate-bounce" />
+                  )}
+                  </div>
+                </motion.div>
+              )}
               </AnimatePresence>
+
             </div>
             <div className="mt-4 text-center">
               <p className="text-gray-600 text-sm">
