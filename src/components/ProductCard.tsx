@@ -19,19 +19,36 @@ const ProductCard: React.FC<ProductCardProps> = ({
   index,
   totalCards,
 }) => {
-  const [isDragging, setIsDragging] = React.useState(false);
-
   const handleDragEnd = (event: any, info: any) => {
     const { offset, velocity } = info;
     const swipe = Math.abs(offset.x) * velocity.x;
     const swipeUp = Math.abs(offset.y) * velocity.y;
 
-    if (swipeUp < -0.5) {
+    const minDragDistance = 50;
+
+    const angle = Math.atan2(offset.y, offset.x) * (180 / Math.PI);
+    const isHorizontalSwipe = Math.abs(angle) < 30 || Math.abs(angle) > 150;
+    const isVerticalSwipe = Math.abs(angle) > 60 && Math.abs(angle) < 120;
+
+    if (
+      Math.abs(offset.x) < minDragDistance &&
+      Math.abs(offset.y) < minDragDistance
+    ) {
+      return;
+    }
+
+    if (
+      isVerticalSwipe &&
+      swipeUp < -0.8 &&
+      Math.abs(offset.y) > minDragDistance
+    ) {
       onSwipeUp(product.id);
-    } else if (swipe > 0.5) {
-      onSwipeRight(product.id);
-    } else if (swipe < -0.5) {
-      onSwipeLeft(product.id);
+    } else if (isHorizontalSwipe) {
+      if (swipe > 0.8 && Math.abs(offset.x) > minDragDistance) {
+        onSwipeRight(product.id);
+      } else if (swipe < -0.8 && Math.abs(offset.x) > minDragDistance) {
+        onSwipeLeft(product.id);
+      }
     }
   };
 
@@ -51,7 +68,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
       drag
       dragDirectionLock
       dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-      onDragStart={() => setIsDragging(true)}
       onDragEnd={handleDragEnd}
       whileDrag={{ scale: 1.05 }}
     >
